@@ -38,6 +38,15 @@ public class ButtonController : SingletonBehaviour<ButtonController>
 		setGridSizeObject.SetActive(true);
 	}
 
+	public void LoadLevel(int val)
+	{
+		GameController.Instance.LoadLevel(val);
+	}
+
+	public void Play()
+	{
+		LoadLevel(GameController.Instance.playerSave.level);
+	}
 
 	public void SolveCrossword()
 	{
