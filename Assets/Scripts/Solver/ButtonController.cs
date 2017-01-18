@@ -21,11 +21,10 @@ public class ButtonController : SingletonBehaviour<ButtonController>
 	public InputField XSize;
 	public InputField YSize;
 
-	GameObject currentMenu;
 
 	void Start()
 	{
-		currentMenu = title;
+		MenuManager.Instance.OpenMenu(title);
 	}
 
 	int x;
@@ -63,23 +62,17 @@ public class ButtonController : SingletonBehaviour<ButtonController>
 		CrosswordSolver.Instance.Solve(FieldController.Instance.fields, WordsContentTracker.Instance.words);
 	}
 
-	public void OpenLevelSelect(bool overlay)
+	public void OpenLevelSelect()
 	{
-		levelSelect.SetActive(true);
+		MenuManager.Instance.OpenMenu(levelSelect);
 		levelSelect.GetComponent<LevelSelector>().ShowUnlockedLevels();
-		if (!overlay)
-		{
-			TurnOffCurrent(levelSelect);
-		}
 	}
 
-	void TurnOffCurrent(GameObject activeMenu)
+	public void BackMenu()
 	{
-		if (currentMenu != activeMenu)
-		{
-			currentMenu.SetActive(false);
-		}
+		MenuManager.Instance.BackMenu();
 	}
+
 
 	public void SpawnGrid()
 	{
