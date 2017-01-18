@@ -8,6 +8,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 public class PlayerData
 {
 	public int level = 0;
+	public int latestLevel = 0;
 }
 
 public static class SaveLoad

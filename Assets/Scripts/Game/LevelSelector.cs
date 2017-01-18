@@ -24,4 +24,12 @@ public class LevelSelector : MonoBehaviour
 		}
 	}
 
+	public void ShowUnlockedLevels()
+	{
+		for (int i = GameController.Instance.playerSave.latestLevel + 1; i < levels.Count; i++)
+		{
+			levels [i].interactable = false;
+		}
+	}
+
 }

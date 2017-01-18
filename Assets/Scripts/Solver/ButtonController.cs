@@ -66,15 +66,19 @@ public class ButtonController : SingletonBehaviour<ButtonController>
 	public void OpenLevelSelect(bool overlay)
 	{
 		levelSelect.SetActive(true);
+		levelSelect.GetComponent<LevelSelector>().ShowUnlockedLevels();
 		if (!overlay)
 		{
-			TurnOffCurrent();
+			TurnOffCurrent(levelSelect);
 		}
 	}
 
-	void TurnOffCurrent()
+	void TurnOffCurrent(GameObject activeMenu)
 	{
-		currentMenu.SetActive(false);
+		if (currentMenu != activeMenu)
+		{
+			currentMenu.SetActive(false);
+		}
 	}
 
 	public void SpawnGrid()

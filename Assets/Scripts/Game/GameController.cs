@@ -20,18 +20,22 @@ public class GameController : SingletonBehaviour<GameController>
 
 	public void LoadLevel(int level)
 	{
-
+		playerSave.level = level;
+		if (playerSave.latestLevel < level)
+		{
+			playerSave.latestLevel = level;
+		}
 	}
 
-	// Use this for initialization
-	void Start()
+	public void CompleteLevel(bool win)
 	{
-	
-	}
-	
-	// Update is called once per frame
-	void Update()
-	{
-	
+		if (win)
+		{
+			LoadLevel(playerSave.level + 1);
+		}
+		else
+		{
+			LoadLevel(playerSave.level);
+		}
 	}
 }
