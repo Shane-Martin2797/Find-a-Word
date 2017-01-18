@@ -16,8 +16,17 @@ public class ButtonController : SingletonBehaviour<ButtonController>
 	public GameObject title;
 	public GameObject setGridSizeObject;
 
+	public GameObject levelSelect;
+
 	public InputField XSize;
 	public InputField YSize;
+
+	GameObject currentMenu;
+
+	void Start()
+	{
+		currentMenu = title;
+	}
 
 	int x;
 	int y;
@@ -40,6 +49,7 @@ public class ButtonController : SingletonBehaviour<ButtonController>
 
 	public void LoadLevel(int val)
 	{
+		Debug.Log("Loading Level " + val);
 		GameController.Instance.LoadLevel(val);
 	}
 
@@ -51,6 +61,20 @@ public class ButtonController : SingletonBehaviour<ButtonController>
 	public void SolveCrossword()
 	{
 		CrosswordSolver.Instance.Solve(FieldController.Instance.fields, WordsContentTracker.Instance.words);
+	}
+
+	public void OpenLevelSelect(bool overlay)
+	{
+		levelSelect.SetActive(true);
+		if (!overlay)
+		{
+			TurnOffCurrent();
+		}
+	}
+
+	void TurnOffCurrent()
+	{
+		currentMenu.SetActive(false);
 	}
 
 	public void SpawnGrid()
