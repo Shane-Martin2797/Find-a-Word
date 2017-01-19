@@ -159,6 +159,7 @@ public class GameController : SingletonBehaviour<GameController>
 	IEnumerator PopulateLetters()
 	{
 		Debug.Log("POPULATING LETTERS");
+
 		Debug.Log("DONE POPULATING LETTERS");
 
 		StartCoroutine(ScrambleExtraLetters());
