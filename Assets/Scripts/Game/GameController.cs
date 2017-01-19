@@ -27,8 +27,7 @@ public class GameController : SingletonBehaviour<GameController>
 		if (paused)
 		{
 			PauseApplication();
-		}
-		else
+		} else
 		{
 			UnPauseApplication();
 		}
@@ -40,8 +39,7 @@ public class GameController : SingletonBehaviour<GameController>
 		if (paused)
 		{
 			PauseApplication();
-		}
-		else
+		} else
 		{
 			UnPauseApplication();
 		}
@@ -69,7 +67,7 @@ public class GameController : SingletonBehaviour<GameController>
 
 	public string LevelToString()
 	{
-
+		return "";
 	}
 
 	void UnPauseApplication()
@@ -92,8 +90,7 @@ public class GameController : SingletonBehaviour<GameController>
 		if (win)
 		{
 			LoadLevel(playerSave.level + 1);
-		}
-		else
+		} else
 		{
 			LoadLevel(playerSave.level);
 		}
@@ -129,7 +126,7 @@ public class GameController : SingletonBehaviour<GameController>
 
 	void BuildBoard()
 	{
-		StartCoroutine(PopulateWords);
+		StartCoroutine(PopulateWords());
 	}
 
 	IEnumerator PopulateWords()
@@ -140,14 +137,16 @@ public class GameController : SingletonBehaviour<GameController>
 
 		for (int i = 0; i < currentLevel.words.Count; i++)
 		{
-			paths [i] = FindSuitablePath(currentLevel.words [i]);
+			paths [i] = FindSuitablePath(currentLevel.words [i].wordString);
 		}
+
+		yield return new WaitForEndOfFrame();
 
 		for (int i = 0; i < paths.Length; i++)
 		{
 			for (int j = 0; j < paths [j].Count; j++)
 			{
-				board [paths [i] [j].x, paths [i] [j].y] = currentLevel.words [i].wordString [j];
+				board [Mathf.RoundToInt(paths [i] [j].x), Mathf.RoundToInt(paths [i] [j].y)] = currentLevel.words [i].wordString [j];
 			}
 		}
 
@@ -159,7 +158,7 @@ public class GameController : SingletonBehaviour<GameController>
 	IEnumerator PopulateLetters()
 	{
 		Debug.Log("POPULATING LETTERS");
-
+		yield return new WaitForEndOfFrame();
 		Debug.Log("DONE POPULATING LETTERS");
 
 		StartCoroutine(ScrambleExtraLetters());
@@ -168,6 +167,7 @@ public class GameController : SingletonBehaviour<GameController>
 	IEnumerator ScrambleExtraLetters()
 	{
 		Debug.Log("POPULATING LETTERS");
+		yield return new WaitForEndOfFrame();
 		Debug.Log("DONE POPULATING LETTERS");
 
 	}
@@ -194,7 +194,7 @@ public class GameController : SingletonBehaviour<GameController>
 		for (int i = 0; i < allStartingPoints.Count; i++)
 		{
 			List<Vector2> dirToCheck = FindDirectionsToCheck(Mathf.RoundToInt(allStartingPoints [i].x), Mathf.RoundToInt(allStartingPoints [i].y), word);
-			if (dirToCheck == 0)
+			if (dirToCheck.Count == 0)
 			{
 				allStartingPoints.Remove(allStartingPoints [i]);
 				i--;
@@ -222,8 +222,7 @@ public class GameController : SingletonBehaviour<GameController>
 					if (!SearchTile(xx, yy, word [l], true))
 					{
 						continueSearching = false;
-					}
-					else
+					} else
 					{
 						if (l == word.Length - 1)
 						{
