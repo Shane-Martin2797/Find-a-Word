@@ -45,24 +45,26 @@ public class GameController : SingletonBehaviour<GameController>
 		}
 	}
 
-	private PauseData pauseData;
+	private PauseData pauseData = new PauseData();
 
 	void PauseApplication()
 	{
-		DateTime now = DateTime.Now;
+		if (currentLevel != null)
+		{
+			DateTime now = DateTime.Now;
 
-		pauseData.second = now.Second;
-		pauseData.minute = now.Minute;
-		pauseData.hour = now.Hour;
+			pauseData.second = now.Second;
+			pauseData.minute = now.Minute;
+			pauseData.hour = now.Hour;
 
-		pauseData.day = now.Day;
-		pauseData.month = now.Month;
-		pauseData.year = now.Year;
+			pauseData.day = now.Day;
+			pauseData.month = now.Month;
+			pauseData.year = now.Year;
 
-		pauseData.level = playerSave.level;
-		pauseData.found = currentLevel.GetLevelData().found;
-		pauseData.board = LevelToString();
-
+			pauseData.level = playerSave.level;
+			pauseData.found = currentLevel.GetLevelData().found;
+			pauseData.board = LevelToString();
+		}
 	}
 
 	public string LevelToString()
@@ -87,6 +89,7 @@ public class GameController : SingletonBehaviour<GameController>
 
 	public void CompleteLevel(bool win)
 	{
+		DeloadLevel();
 		if (win)
 		{
 			LoadLevel(playerSave.level + 1);
@@ -94,6 +97,11 @@ public class GameController : SingletonBehaviour<GameController>
 		{
 			LoadLevel(playerSave.level);
 		}
+	}
+
+	void DeloadLevel()
+	{
+		currentLevel = null;
 	}
 
 	Level currentLevel;

@@ -8,7 +8,6 @@ public class LevelSelector : MonoBehaviour
 
 	public List<Button> levels = new List<Button>();
 
-
 	void Start()
 	{
 		for (int i = 0; i < levels.Count; i++)
