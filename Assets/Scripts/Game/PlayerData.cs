@@ -31,7 +31,7 @@ public static class SaveLoad
 	}
 
 
-	public static void CreateFile(PlayerData data)
+	public static void CreateFile()
 	{
 		Debug.LogWarning("Failed to find data for Player: \n Creating file");
 		File.Create(GetPlayerSaveFilePath());
@@ -41,7 +41,7 @@ public static class SaveLoad
 	{
 		if (!File.Exists(GetPlayerSaveFilePath()))
 		{
-			CreateFile(data);
+			CreateFile();
 		}
 
 		FileStream file = new FileStream(GetPlayerSaveFilePath(), FileMode.OpenOrCreate, FileAccess.ReadWrite);
@@ -72,5 +72,76 @@ public static class SaveLoad
 			return new PlayerData();
 		}
 	}
+
+}
+
+
+
+public class LevelEditor
+{
+	private const string fileType = ".txt";
+	private const string encasingFolders = "/Files/Levels/";
+
+
+	public static string GetLevelFilePath(int levelNumber)
+	{
+		#if UNITY_EDITOR
+		return Application.dataPath + encasingFolders + "Level" + levelNumber + fileType;
+		#elif UNITY_ANDROID
+		return Application.persistentDataPath + "Level" + levelNumber + fileType;
+		#elif UNITY_IPHONE
+		return Application.persistentDataPath + "\" + "Level" + levelNumber + fileType;
+		#else
+		return Application.dataPath + encasingFolders + "Level" + levelNumber + fileType;
+		#endif
+	}
+
+	public static void CreateFile(int levelNumber)
+	{
+		Debug.LogWarning("Failed to find data for Level " + levelNumber + ": \n Creating file");
+		File.Create(GetLevelFilePath(levelNumber));
+	}
+
+
+	public static void SaveLevel(int levelNumber, LevelData data)
+	{
+		if (!File.Exists(GetLevelFilePath(levelNumber)))
+		{
+			CreateFile(levelNumber);
+		}
+
+		FileStream file = new FileStream(GetLevelFilePath(levelNumber), FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        
+		using (file)
+		{
+			BinaryFormatter binaryFormatter = new BinaryFormatter();
+			binaryFormatter.Serialize(file, data);
+		}
+
+		file.Close();
+	}
+
+	public static LevelData LoadLevel(int levelNumber)
+	{
+		if (File.Exists(GetLevelFilePath(levelNumber)))
+		{
+			FileStream file = new FileStream(GetLevelFilePath(levelNumber), FileMode.Open, FileAccess.ReadWrite);
+			BinaryFormatter bf = new BinaryFormatter();
+			LevelData data = (LevelData)bf.Deserialize(file);
+			file.Flush();
+			file.Close();
+			return data;
+		}
+		else
+		{
+			return new LevelData();
+		}
+	}
+
+	public static Level DataToLevel(LevelData data)
+	{
+		return new Level(data.sizeOfBoardX, data.sizeOfBoardY, data.words);
+	}
+
 
 }

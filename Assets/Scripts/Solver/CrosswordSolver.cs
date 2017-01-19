@@ -8,6 +8,7 @@ public class Word
 {
 	public string wordString;
 	public List<Vector2> path = new List<Vector2>();
+	public bool found = false;
 
 	public Word()
 	{
