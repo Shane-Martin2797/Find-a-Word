@@ -13,10 +13,15 @@ public class LevelSelector : MonoBehaviour
 		for (int i = 0; i < levels.Count; i++)
 		{
 			int tempVal = i;
+			GameObject tempObj = gameObject;
 
 			levels [i].onClick.AddListener(() =>
 			{
 				ButtonController.Instance.LoadLevel(tempVal);
+			});
+			levels [i].onClick.AddListener(() =>
+			{
+				MenuManager.Instance.CloseMenu(gameObject);
 			});
 
 			levels [i].GetComponentInChildren<Text>(true).text = "Level " + (i + 1);

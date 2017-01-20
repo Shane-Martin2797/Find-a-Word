@@ -55,6 +55,7 @@ public class ButtonController : SingletonBehaviour<ButtonController>
 	public void Play()
 	{
 		LoadLevel(GameController.Instance.playerSave.level);
+		MenuManager.Instance.CloseMenu(title);
 	}
 
 	public void SolveCrossword()

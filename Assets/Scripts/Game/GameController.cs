@@ -99,6 +99,7 @@ public class GameController : SingletonBehaviour<GameController>
 
 	public void LoadLevel(int level)
 	{
+		/*
 		if (playerSave.level == level)
 		{
 			if (Reload())
@@ -107,7 +108,7 @@ public class GameController : SingletonBehaviour<GameController>
 				return;
 			}
 		}
-
+		*/
 
 		playerSave.level = level;
 
@@ -244,7 +245,8 @@ public class GameController : SingletonBehaviour<GameController>
 
 		for (int i = 0; i < paths.Length; i++)
 		{
-			for (int j = 0; j < paths [j].Count; j++)
+			currentLevel.words [i].path = paths [i];
+			for (int j = 0; j < paths [i].Count; j++)
 			{
 				board [Mathf.RoundToInt(paths [i] [j].x), Mathf.RoundToInt(paths [i] [j].y)] = currentLevel.words [i].wordString [j];
 			}
@@ -258,10 +260,28 @@ public class GameController : SingletonBehaviour<GameController>
 	IEnumerator PopulateLetters()
 	{
 		Debug.Log("POPULATING LETTERS");
+
+		for (int i = 0; i < board.GetLength(0); i++)
+		{
+			for (int j = 0; j < board.GetLength(1); j++)
+			{
+				if (SearchTile(i, j, '\0', true))
+				{
+					board [i, j] = PickRandomLetter();
+				}
+			}
+		}
+
 		yield return new WaitForEndOfFrame();
 		Debug.Log("DONE POPULATING LETTERS");
 
 		StartCoroutine(CheckBoard());
+	}
+
+	char PickRandomLetter()
+	{
+		string letter = "e";
+		return letter [0];
 	}
 
 	IEnumerator CheckBoard()
@@ -270,13 +290,32 @@ public class GameController : SingletonBehaviour<GameController>
 		yield return new WaitForEndOfFrame();
 		Debug.Log("DONE POPULATING LETTERS");
 
+		StartCoroutine(CreateBoard());
+	}
+
+	IEnumerator CreateBoard()
+	{
+		Debug.Log("CREATING BOARD");
+
+
+		GridSpawner.Instance.SpawnGrid(board.GetLength(0), board.GetLength(1));
+
+		for (int i = 0; i < board.GetLength(0); i++)
+		{
+			for (int j = 0; j < board.GetLength(1); j++)
+			{
+				FieldController.Instance.fields [i, j].text = board [i, j].ToString();
+			}
+		}
+
+		yield return new WaitForEndOfFrame();
+		Debug.Log("DONE CREATING BOARD");
 	}
 
 
 	List<Vector2> FindSuitablePath(string word)
 	{
 		List<List<Vector2>> allPossiblePaths = new List<List<Vector2>>();
-
 
 		List<Vector2> allStartingPoints = new List<Vector2>();
 
@@ -303,14 +342,12 @@ public class GameController : SingletonBehaviour<GameController>
 
 			bool continueSearching = true;
 			bool foundPossiblePath = false;
-			int dir = 0;
 
 			//For every direction to check
 			for (int j = 0; j < dirToCheck.Count; j++)
 			{
 				foundPossiblePath = false;
 				continueSearching = true;
-				dir = j;
 
 				// Start at 2 since we have the first 2 letters
 				for (int l = 2; l < word.Length; l++)
@@ -339,14 +376,22 @@ public class GameController : SingletonBehaviour<GameController>
 
 				if (foundPossiblePath)
 				{
-					for (int p = 0; p < word.Length - 1; p++)
+					allPossiblePaths.Add(new List<Vector2>());
+					for (int p = 0; p < (word.Length); p++)
 					{
-						allPossiblePaths [i].Add(
-							new Vector2(Mathf.RoundToInt(allStartingPoints [i].x) + (Mathf.RoundToInt(dirToCheck [dir].x) * (p + 1)),
-								Mathf.RoundToInt(allStartingPoints [i].y) + (Mathf.RoundToInt(dirToCheck [dir].y) * (p + 1))));
+
+						allPossiblePaths [(allPossiblePaths.Count - 1)].Add(
+							new Vector2(
+								Mathf.RoundToInt(allStartingPoints [i].x) + (Mathf.RoundToInt(dirToCheck [j].x) * (p)),
+								Mathf.RoundToInt(allStartingPoints [i].y) + (Mathf.RoundToInt(dirToCheck [j].y) * (p))));
 					}
 				}
 			}
+		}
+
+		if (allPossiblePaths.Count == 0)
+		{
+			return new List<Vector2>();
 		}
 
 		return allPossiblePaths [UnityEngine.Random.Range(0, allPossiblePaths.Count)];
@@ -402,7 +447,7 @@ public class GameController : SingletonBehaviour<GameController>
 
 
 
-				if (SearchTile(xx, yy, word [1]))
+				if (SearchTile(xx, yy, word [1], true))
 				{
 					directionsToCheck.Add(new Vector2(i, j));
 				}
@@ -431,13 +476,9 @@ public class GameController : SingletonBehaviour<GameController>
 		dataTo.sizeOfBoardX = dataFrom.sizeOfBoardX;
 		dataTo.sizeOfBoardY = dataFrom.sizeOfBoardY;
 
-		dataTo.words.Capacity = dataFrom.words.Count;
 		for (int i = 0; i < dataFrom.words.Count; i++)
 		{
-			dataTo.words [i] = (dataFrom.words [i]);
+			dataTo.words.Add(dataFrom.words [i]);
 		}
 	}
-
-
-
 }

@@ -67,8 +67,8 @@ public class GridSpawner : SingletonBehaviour<GridSpawner>
 
 				placeholderText.text = "A";
 
-				obj.textComponent.fontSize = Mathf.RoundToInt((Mathf.Min(trueBoxSize.x, trueBoxSize.y)) - 20);
-				placeholderText.fontSize = Mathf.RoundToInt((Mathf.Min(trueBoxSize.x, trueBoxSize.y)) - 20);
+				obj.textComponent.fontSize = Mathf.RoundToInt((Mathf.Min(trueBoxSize.x, trueBoxSize.y)) / 1.875f);
+				placeholderText.fontSize = Mathf.RoundToInt((Mathf.Min(trueBoxSize.x, trueBoxSize.y)) / 1.875f);
 
 				FieldController.Instance.SetField(i, j, obj);
 

@@ -18,8 +18,24 @@ public class MenuManager : SingletonBehaviour<MenuManager>
 		}
 
 		UpdateMenus(menu);
-
 	}
+
+	public void CloseCurrentMenu()
+	{
+		if (currentMenu != null)
+		{
+			currentMenu.SetActive(false);
+		}
+	}
+
+	public void CloseMenu(GameObject menu)
+	{
+		if (menu != null)
+		{
+			menu.SetActive(false);
+		}
+	}
+
 
 	public void UpdateMenus(GameObject menu)
 	{
