@@ -12,12 +12,12 @@ public class GameController : SingletonBehaviour<GameController>
 
 	void OnEnable()
 	{
-		playerSave = SaveLoad.Load();
+		playerSave = SaveLoad.LoadPlayerData();
 	}
 
 	void OnDisable()
 	{
-		SaveLoad.Save(playerSave);
+		SaveLoad.SavePlayer(playerSave);
 	}
 
 
@@ -27,9 +27,6 @@ public class GameController : SingletonBehaviour<GameController>
 		if (paused)
 		{
 			PauseApplication();
-		} else
-		{
-			UnPauseApplication();
 		}
 	}
 
@@ -39,9 +36,6 @@ public class GameController : SingletonBehaviour<GameController>
 		if (paused)
 		{
 			PauseApplication();
-		} else
-		{
-			UnPauseApplication();
 		}
 	}
 
@@ -62,14 +56,41 @@ public class GameController : SingletonBehaviour<GameController>
 			pauseData.year = now.Year;
 
 			pauseData.level = playerSave.level;
-			pauseData.found = currentLevel.GetLevelData().found;
-			pauseData.board = LevelToString();
+
+			if (pauseData.found == null)
+			{
+				pauseData.found = new Dictionary<string, bool>();
+			}
+			else
+			{
+				pauseData.found.Clear();
+			}
+
+			for (int i = 0; i < currentLevel.words.Count; i++)
+			{
+				pauseData.found [currentLevel.words [i].wordString] = currentLevel.words [i].found;
+			}
+
+			pauseData.board = BoardToString();
 		}
 	}
 
-	public string LevelToString()
+	public string BoardToString()
 	{
-		return "";
+		string b = "";
+		if (board == null)
+		{
+			return b;
+		}
+
+		for (int i = 0; i < board.GetLength(0); i++)
+		{
+			for (int j = 0; j < board.GetLength(1); j++)
+			{
+				b += board [i, j];
+			}
+		}
+		return b;
 	}
 
 	void UnPauseApplication()
@@ -78,7 +99,18 @@ public class GameController : SingletonBehaviour<GameController>
 
 	public void LoadLevel(int level)
 	{
+		if (playerSave.level == level)
+		{
+			if (Reload())
+			{
+				CreateLevel(level, pauseData);
+				return;
+			}
+		}
+
+
 		playerSave.level = level;
+
 		if (playerSave.latestLevel < level)
 		{
 			playerSave.latestLevel = level;
@@ -87,13 +119,41 @@ public class GameController : SingletonBehaviour<GameController>
 		CreateLevel(level);
 	}
 
+	public bool Reload()
+	{
+		pauseData = SaveLoad.LoadLevel();
+
+		DateTime currentTime = DateTime.Now;
+		DateTime timeOfPause = new DateTime();
+
+		timeOfPause.AddSeconds(pauseData.second);
+		timeOfPause.AddMinutes(pauseData.minute);
+		timeOfPause.AddHours(pauseData.hour);
+
+		timeOfPause.AddDays(pauseData.day);
+		timeOfPause.AddMonths(pauseData.month);
+		timeOfPause.AddYears(pauseData.year);
+
+		TimeSpan difference = currentTime.Subtract(timeOfPause);
+		Debug.Log(difference);
+
+		if (difference.Days >= 1)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+
 	public void CompleteLevel(bool win)
 	{
 		DeloadLevel();
 		if (win)
 		{
 			LoadLevel(playerSave.level + 1);
-		} else
+		}
+		else
 		{
 			LoadLevel(playerSave.level);
 		}
@@ -108,34 +168,66 @@ public class GameController : SingletonBehaviour<GameController>
 
 	public void CreateLevel(int levelNumber)
 	{
-		//Level data = LevelEditor.DataToLevel(LevelEditor.LoadLevel(levelNumber));
-
-		//Create a local version of the data so we can edit word paths and keep a copy of it.
 		if (currentLevel == null)
 		{
 			currentLevel = new Level();
 		}
+		else
+		{
+			Reset(currentLevel);
+		}
 
-		Reset(currentLevel);
-
-		//Copy(currentLevel, data);
-
-		currentLevel.sizeOfBoardX = 5;
-		currentLevel.sizeOfBoardY = 5;
-
-		currentLevel.AddWord(("but"));
-		currentLevel.AddWord(("edd"));
-
-		LevelEditor.SaveLevel(levelNumber, currentLevel.GetLevelData());
+		Copy(currentLevel, Levels.Instance.levels [levelNumber]);
 
 		board = new char[currentLevel.sizeOfBoardX, currentLevel.sizeOfBoardY];
 		BuildBoard();
 	}
 
+	public void CreateLevel(int levelNumber, PauseData data)
+	{
+		if (currentLevel == null)
+		{
+			currentLevel = new Level();
+		}
+		else
+		{
+			Reset(currentLevel);
+		}
+
+		Copy(currentLevel, Levels.Instance.levels [levelNumber]);
+
+		for (int i = 0; i < currentLevel.words.Count; i++)
+		{
+			if (data.found [currentLevel.words [i].wordString] == null)
+			{
+				Debug.Log("Word: " + currentLevel.words [i].wordString + " not Loaded");
+				continue;
+			}
+			currentLevel.words [i].found = data.found [currentLevel.words [i].wordString];
+		}
+
+		board = new char[currentLevel.sizeOfBoardX, currentLevel.sizeOfBoardY];
+		BuildBoard(data.board);
+	}
+
+
 	void BuildBoard()
 	{
 		StartCoroutine(PopulateWords());
 	}
+
+	void BuildBoard(string b)
+	{
+		for (int i = 0; i < board.GetLength(0); i++)
+		{
+			for (int j = 0; j < board.GetLength(1); j++)
+			{
+				board [i, j] = b [(i * board.GetLength(1) + j)];
+			}
+		}
+		StartCoroutine(CheckBoard());
+	}
+
 
 	IEnumerator PopulateWords()
 	{
@@ -169,10 +261,10 @@ public class GameController : SingletonBehaviour<GameController>
 		yield return new WaitForEndOfFrame();
 		Debug.Log("DONE POPULATING LETTERS");
 
-		StartCoroutine(ScrambleExtraLetters());
+		StartCoroutine(CheckBoard());
 	}
 
-	IEnumerator ScrambleExtraLetters()
+	IEnumerator CheckBoard()
 	{
 		Debug.Log("POPULATING LETTERS");
 		yield return new WaitForEndOfFrame();
@@ -230,7 +322,8 @@ public class GameController : SingletonBehaviour<GameController>
 					if (!SearchTile(xx, yy, word [l], true))
 					{
 						continueSearching = false;
-					} else
+					}
+					else
 					{
 						if (l == word.Length - 1)
 						{
@@ -337,9 +430,11 @@ public class GameController : SingletonBehaviour<GameController>
 
 		dataTo.sizeOfBoardX = dataFrom.sizeOfBoardX;
 		dataTo.sizeOfBoardY = dataFrom.sizeOfBoardY;
+
+		dataTo.words.Capacity = dataFrom.words.Count;
 		for (int i = 0; i < dataFrom.words.Count; i++)
 		{
-			dataTo.words.Add(dataFrom.words [i]);
+			dataTo.words [i] = (dataFrom.words [i]);
 		}
 	}
 
