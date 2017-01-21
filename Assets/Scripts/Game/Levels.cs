@@ -318,7 +318,8 @@ public class Levels : SingletonBehaviour<Levels>
 					}
 				}
 
-				x = Mathf.Max(Mathf.RoundToInt(((float)length / 2) * ((float)length / 2)), largestWordLength);
+				//x = Mathf.Max(Mathf.RoundToInt(((float)length / 2) * ((float)length / 2)), largestWordLength);
+				x = largestWordLength + 2;
 				y = x;
 
 				levels [i] = (new Level(x, y, stringInput));
