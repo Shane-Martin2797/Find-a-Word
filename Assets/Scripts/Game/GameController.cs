@@ -3,10 +3,29 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+public enum Language
+{
+	American,
+	Australian,
+	British
+}
+
 public class GameController : SingletonBehaviour<GameController>
 {
 	public PlayerData playerSave;
 	bool paused = false;
+	public Language language;
+
+	void Update()
+	{
+		if (playerSave != null)
+		{
+			if (playerSave.language != (int)language)
+			{
+				playerSave.language = (int)language;
+			}
+		}
+	}
 
 	public char[,] board;
 
@@ -178,7 +197,7 @@ public class GameController : SingletonBehaviour<GameController>
 			Reset(currentLevel);
 		}
 
-		Copy(currentLevel, Levels.Instance.levels [levelNumber]);
+		Copy(currentLevel, Levels.Instance.GetLevel((Language)playerSave.language) [levelNumber]);
 
 		board = new char[currentLevel.sizeOfBoardX, currentLevel.sizeOfBoardY];
 		BuildBoard();
@@ -195,7 +214,7 @@ public class GameController : SingletonBehaviour<GameController>
 			Reset(currentLevel);
 		}
 
-		Copy(currentLevel, Levels.Instance.levels [levelNumber]);
+		Copy(currentLevel, Levels.Instance.GetLevel((Language)playerSave.language) [levelNumber]);
 
 		for (int i = 0; i < currentLevel.words.Count; i++)
 		{
@@ -350,7 +369,7 @@ public class GameController : SingletonBehaviour<GameController>
 				continueSearching = true;
 
 				// Start at 2 since we have the first 2 letters
-				for (int l = 2; l < word.Length; l++)
+				for (int l = 1; l < word.Length; l++)
 				{
 
 					int xx = Mathf.RoundToInt(allStartingPoints [i].x) + (Mathf.RoundToInt(dirToCheck [j].x) * (l));

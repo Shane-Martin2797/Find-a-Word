@@ -9,6 +9,7 @@ public class PlayerData
 {
 	public int level = 0;
 	public int latestLevel = 0;
+	public int language = 0;
 }
 
 [System.Serializable]
@@ -125,4 +126,78 @@ public static class SaveLoad
 			return new PauseData();
 		}
 	}
+
+
+	#if UNITY_EDITOR
+
+	private const string AmericanDictionary = "Dictionarys/American";
+	private const string AustralianDictionary = "Dictionarys/Australian";
+	private const string BritishDictionary = "Dictionarys/British";
+
+	public static Dictionary<int, List<string>> ImportDictionary(Language lan)
+	{
+		Dictionary<int, List<string>> dic = new Dictionary<int, List<string>>();
+
+		string path = "";
+
+		switch (lan)
+		{
+			case Language.Australian:
+				{
+					path = GetFilePath(AustralianDictionary);
+					break;
+				}
+			case Language.American:
+				{
+					path = GetFilePath(AustralianDictionary);
+					break;
+				}
+			case Language.British:
+				{
+					path = GetFilePath(AustralianDictionary);
+					break;
+				}
+			default:
+				{
+					path = GetFilePath(AustralianDictionary);
+					break;
+				}
+		}
+
+
+		if (!File.Exists(path))
+		{
+			return null;
+		}
+
+		StreamReader file = new StreamReader(path);
+		string f = file.ReadToEnd();
+
+		string[] lines = f.Split('\n');
+
+		for (int i = 0; i < lines.Length; i++)
+		{
+			if (lines [i].Length > 15)
+			{
+				continue;
+			}
+			if (lines [i].Contains("'"))
+			{
+				continue;
+			}
+
+			lines [i] = lines [i].ToLower();
+
+			if (!dic.ContainsKey(lines [i].Length))
+			{
+				dic.Add(lines [i].Length, new List<string>());
+			}
+			dic [lines [i].Length].Add(lines [i]);
+		}
+
+		return dic;
+	}
+
+	#endif
+
 }
