@@ -83,7 +83,7 @@ public class Levels : SingletonBehaviour<Levels>
 
 	public int GetNumberOfWords(int level, int letters)
 	{
-		if(letters < startingCSVNumberOfLetters)
+		if (letters < startingCSVNumberOfLetters)
 		{
 			return -1;
 		}
@@ -107,119 +107,136 @@ public class Levels : SingletonBehaviour<Levels>
 
 	public LevelSelector selector;
 
-	public Level[] GetLevel (Language lan)
+	public Level[] GetLevel(Language lan)
 	{
-		switch (lan) {
-		case Language.Australian:
-			{
-				return australianLevels;
-			}
-		case Language.American:
-			{
-				return americanLevels;
-			}
-		case Language.British:
-			{
-				return britishLevels;
-			}
-		default:
-			{
-				return australianLevels;
-			}
+		switch (lan)
+		{
+			case Language.Australian:
+				{
+					return australianLevels;
+				}
+			case Language.American:
+				{
+					return americanLevels;
+				}
+			case Language.British:
+				{
+					return britishLevels;
+				}
+			default:
+				{
+					return australianLevels;
+				}
 		}
 	}
 
-	public void SetLevel (Language lan, Level[] level)
+	public void SetLevel(Language lan, Level[] level)
 	{
-		switch (lan) {
-		case Language.Australian:
-			{
-				australianLevels = level;
-				break;
-			}
-		case Language.American:
-			{
-				americanLevels = level;
-				break;
-			}
-		case Language.British:
-			{
-				britishLevels = level;
-				break;
-			}
-		default:
-			{
-				australianLevels = level;
-				break;
-			}
+		switch (lan)
+		{
+			case Language.Australian:
+				{
+					australianLevels = level;
+					break;
+				}
+			case Language.American:
+				{
+					americanLevels = level;
+					break;
+				}
+			case Language.British:
+				{
+					britishLevels = level;
+					break;
+				}
+			default:
+				{
+					australianLevels = level;
+					break;
+				}
 		}
 	}
 
 
 
-	void Start ()
+	void Start()
 	{
-		if (selector == null) {
-			selector = FindObjectOfType<LevelSelector> ();
+		if (selector == null)
+		{
+			selector = FindObjectOfType<LevelSelector>();
 		}
 	}
+
+	#if UNITY_EDITOR
 
 	public Dictionary<int, List<string>> AustralianDictionary;
 	public Dictionary<int, List<string>> AmericanDictionary;
 	public Dictionary<int, List<string>> BritishDictionary;
 
-	Dictionary<int, List<string>> GetDictionary (Language lan, bool import = false)
+	Dictionary<int, List<string>> GetDictionary(Language lan, bool import = false)
 	{
-		switch (lan) {
-		case Language.Australian:
-			{
-				if (AustralianDictionary == null || import) {
-					AustralianDictionary = SaveLoad.ImportDictionary (lan);
+		switch (lan)
+		{
+			case Language.Australian:
+				{
+					if (AustralianDictionary == null || import)
+					{
+						AustralianDictionary = SaveLoad.ImportDictionary(lan);
+					}
+					return AustralianDictionary;
 				}
-				return AustralianDictionary;
-			}
-		case Language.American:
-			{
-				if (AmericanDictionary == null || import) {
-					AmericanDictionary = SaveLoad.ImportDictionary (lan);
+			case Language.American:
+				{
+					if (AmericanDictionary == null || import)
+					{
+						AmericanDictionary = SaveLoad.ImportDictionary(lan);
+					}
+					return AmericanDictionary;
 				}
-				return AmericanDictionary;
-			}
-		case Language.British:
-			{
-				if (BritishDictionary == null || import) {
-					BritishDictionary = SaveLoad.ImportDictionary (lan);
+			case Language.British:
+				{
+					if (BritishDictionary == null || import)
+					{
+						BritishDictionary = SaveLoad.ImportDictionary(lan);
+					}
+					return BritishDictionary;
 				}
-				return BritishDictionary;
-			}
-		default:
-			{
-				if (AustralianDictionary == null || import) {
-					AustralianDictionary = SaveLoad.ImportDictionary (lan);
+			default:
+				{
+					if (AustralianDictionary == null || import)
+					{
+						AustralianDictionary = SaveLoad.ImportDictionary(lan);
+					}
+					return AustralianDictionary;
 				}
-				return AustralianDictionary;
-			}
 		}
 	}
 
-	string GetRandomWord (List<string> wordList, List<string> wordsToAvoid = null)
+	string GetRandomWord(List<string> wordList, List<string> wordsToAvoid = null)
 	{
-		if (wordList == null || wordList.Count == 0) {
+		if (wordList == null || wordList.Count == 0)
+		{
 			return "BUTTS";
 		}
-		string randomWord = wordList [UnityEngine.Random.Range (0, wordList.Count)];
+		string randomWord = wordList [UnityEngine.Random.Range(0, wordList.Count)];
 
-		if (wordsToAvoid != null) {
+		if (wordsToAvoid != null)
+		{
 			int rC = 0;
-			while (wordsToAvoid.Contains(randomWord)) {
-				if (rC >= 1000) {
+			while (wordsToAvoid.Contains(randomWord))
+			{
+				if (rC >= 1000)
+				{
 
-					if (rC - 1000 > wordList.Count) {
+					if (rC - 1000 > wordList.Count)
+					{
 						return "BUTTS";
 					}
 					randomWord = wordList [rC - 1000];
-				} else {
-					randomWord = wordList [UnityEngine.Random.Range (0, wordList.Count)];
+				}
+				else
+				{
+					randomWord = wordList [UnityEngine.Random.Range(0, wordList.Count)];
 				}
 				rC++;
 			}
@@ -228,44 +245,53 @@ public class Levels : SingletonBehaviour<Levels>
 		return randomWord;
 	}
 
-	List<string> GetWords (Dictionary<int, List<string>> dic, int lev)
+	List<string> GetWords(Dictionary<int, List<string>> dic, int lev)
 	{
-		List<string> s = new List<string> ();
+		List<string> s = new List<string>();
 
-		for (int i = 0; i < levelsString [lev].Length; i++) {
-			for (int j = 0; j < GetNumberOfWords(lev, i); j++) {
-				string newWord = (GetRandomWord (dic [i], s));
-				s.Add (newWord);
+		for (int i = 0; i < levelsString [lev].Length; i++)
+		{
+			for (int j = 0; j < GetNumberOfWords(lev, i); j++)
+			{
+				string newWord = (GetRandomWord(dic [i], s));
+				s.Add(newWord);
 			}
 		}
 		return s;
 	}
 
-	public void PopulateLevels (Language lan, int min, int max)
+	public void PopulateLevels(Language lan, int min, int max)
 	{
-		Dictionary<int, List<string>> dic = GetDictionary (lan);
+		Dictionary<int, List<string>> dic = GetDictionary(lan);
 
-		if (selector == null) {
-			selector = FindObjectOfType<LevelSelector> ();
+		if (selector == null)
+		{
+			selector = FindObjectOfType<LevelSelector>();
 		}
 
-		if (selector != null) {
-			Level[] levels = GetLevel (lan);
+		if (selector != null)
+		{
+			Level[] levels = GetLevel(lan);
 
 			Level[] clone = levels;
 
 			levels = new Level[levelsString.Length];
 
-			if (clone != null) {
-				for (int i = 0; i < min; i++) {
-					if (clone.Length >= i) {
+			if (clone != null)
+			{
+				for (int i = 0; i < min; i++)
+				{
+					if (clone.Length >= i)
+					{
 						break;
 					}
 					levels [i] = clone [i];
 				}
 
-				for (int i = max; i < levelsString.Length; i++) {
-					if (clone.Length >= i) {
+				for (int i = max; i < levelsString.Length; i++)
+				{
+					if (clone.Length >= i)
+					{
 						break;
 					}
 					levels [i] = clone [i];
@@ -273,8 +299,9 @@ public class Levels : SingletonBehaviour<Levels>
 			}
 
 
-			for (int i = min; i < max; i++) {
-				List<string> stringInput = GetWords (dic, i);
+			for (int i = min; i < max; i++)
+			{
+				List<string> stringInput = GetWords(dic, i);
 
 				int x = 0;
 				int y = 0;
@@ -282,19 +309,23 @@ public class Levels : SingletonBehaviour<Levels>
 				int length = 0;
 				int largestWordLength = 0;
 
-				for (int l = 0; l < stringInput.Count; l++) {
+				for (int l = 0; l < stringInput.Count; l++)
+				{
 					length += stringInput [l].Length;
-					if (stringInput [l].Length > largestWordLength) {
+					if (stringInput [l].Length > largestWordLength)
+					{
 						largestWordLength = stringInput [l].Length;
 					}
 				}
 
-				x = Mathf.Max (Mathf.RoundToInt (((float)length / 2) * ((float)length / 2)), largestWordLength);
+				x = Mathf.Max(Mathf.RoundToInt(((float)length / 2) * ((float)length / 2)), largestWordLength);
 				y = x;
 
-				levels [i] = (new Level (x, y, stringInput));
-				SetLevel (lan, levels);
+				levels [i] = (new Level(x, y, stringInput));
+				SetLevel(lan, levels);
 			}
 		}
 	}
+
+	#endif
 }

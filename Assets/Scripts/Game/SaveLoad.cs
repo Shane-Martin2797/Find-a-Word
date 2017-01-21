@@ -31,10 +31,10 @@ public class PauseData
 
 public static class SaveLoad
 {
-	private const string fileType = ".txt";
-	private const string encasingFolders = "/Files/Saves/";
-	private const string PlayerSaveName = "PlayerSave";
-	private const string GameStateName = "GameState";
+	private static string fileType = ".txt";
+	private static string encasingFolders = "/Files/Saves/";
+	private static string PlayerSaveName = "PlayerSave";
+	private static string GameStateName = "GameState";
 
 
 	public static string GetFilePath(string name)
@@ -44,7 +44,7 @@ public static class SaveLoad
 		#elif UNITY_ANDROID
 		return Application.persistentDataPath + name + fileType;
 		#elif UNITY_IPHONE
-		return Application.persistentDataPath + "\" + name + fileType;
+		return Application.persistentDataPath + "/" + name + fileType;
 		#else
 		return Application.dataPath + encasingFolders + name + fileType;
 		#endif
@@ -130,9 +130,9 @@ public static class SaveLoad
 
 	#if UNITY_EDITOR
 
-	private const string AmericanDictionary = "Dictionarys/American";
-	private const string AustralianDictionary = "Dictionarys/Australian";
-	private const string BritishDictionary = "Dictionarys/British";
+	private static string AmericanDictionary = "Dictionarys/American";
+	private static string AustralianDictionary = "Dictionarys/Australian";
+	private static string BritishDictionary = "Dictionarys/British";
 
 	public static Dictionary<int, List<string>> ImportDictionary(Language lan)
 	{
