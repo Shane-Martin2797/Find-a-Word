@@ -37,7 +37,7 @@ public class GridSpawner : SingletonBehaviour<GridSpawner>
 		}
 
 		wordObject.SetActive(true);
-		fieldObject.SetActive(true);
+		//fieldObject.SetActive(true);
 
 		FieldController.Instance.CreateField(x, y);
 

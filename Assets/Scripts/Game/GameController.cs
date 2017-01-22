@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,18 +15,69 @@ public class GameController : SingletonBehaviour<GameController>
 {
 	public PlayerData playerSave;
 	bool paused = false;
-	public Language language;
+	public GridLayoutGroup grid;
+	private float gapRatio = 0.8f;
 
-	void Update()
+	public GameObject letter;
+
+	public void SpawnGrid(int x, int y)
 	{
-		if (playerSave != null)
+		if (x < 0 || y < 0)
 		{
-			if (playerSave.language != (int)language)
+			return;
+		}
+		RectTransform trans = grid.GetComponent<RectTransform>();
+
+		Vector2 spaceSize = new Vector2(trans.rect.width / x, trans.rect.height / y);
+
+		Vector2 trueBoxSize = spaceSize * gapRatio;
+		Vector2 spacing = spaceSize * (1 - gapRatio);
+
+		grid.cellSize = trueBoxSize;
+		grid.spacing = spacing;
+		grid.padding.left = Mathf.RoundToInt(spacing.x / 2);
+		grid.padding.top = Mathf.RoundToInt(spacing.y / 2);
+
+
+		for (int j = 0; j < x; j++)
+		{
+			for (int i = 0; i < y; i++)
 			{
-				playerSave.language = (int)language;
+				GameObject letter = GameObject.Instantiate(GetLetter(x, y));
+
+				if (letter == null)
+				{
+					Debug.Log("No letter for grid position: (" + x + ", " + y + ").");
+					continue;
+				}
+
+				RectTransform letterTrans = letter.GetComponent<RectTransform>();
+
+				if (letterTrans == null)
+				{
+					letterTrans = letter.AddComponent<RectTransform>();
+				}
+
+				letterTrans.SetParent(trans);
+
+				//TODO: Since I am Going to Use Images/Prefabs, Scale will Change (not sizeDelta)
+				letterTrans.localScale = Vector3.one;
+				letterTrans.sizeDelta = trueBoxSize;
 			}
 		}
+
+		//TODO: Cause words to spawn filled out (as uneditable objects)
+		WordsContentTracker.Instance.SpawnFields(WordsContentTracker.Instance.fieldVariables.defaultInputFields);
 	}
+
+	public GameObject GetLetter(int x, int y)
+	{
+
+		//	Get board [x, y], convert it into a string, then a enum/int/object to object, then return that object.
+
+		return letter;
+	}
+
 
 	public char[,] board;
 
@@ -318,6 +370,7 @@ public class GameController : SingletonBehaviour<GameController>
 
 
 		GridSpawner.Instance.SpawnGrid(board.GetLength(0), board.GetLength(1));
+		SpawnGrid(board.GetLength(0), board.GetLength(1));
 
 		for (int i = 0; i < board.GetLength(0); i++)
 		{

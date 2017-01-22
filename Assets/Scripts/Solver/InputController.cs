@@ -3,6 +3,33 @@ using System.Collections;
 
 public class InputController : SingletonBehaviour<InputController>
 {
+	//Grid Size: 750 * 750
+	//Grid Pos: 0, 150 (Anchor: Middle)
+
+	//Words Size: 725 * 300
+	//Words Pos: 0, 112.5 (Anchor: Bottom)
+
+	//Find Area of Click/Tap
+	//Find if it is within the Grid Area
+	//Find the Grid (X, Y) Square
+	//Start Vector2 of MousePos
+
+	//If Dragging
+	//Snap to 45 Degrees (if Diagonal, else 90 degrees)
+	//Only allow Backwards if level allows backwards
+
+	//Highlight Letters in Line as Selected.
+	//Play Selected Animation
+
+	//On Stop Mouse Drag/On Second Tap
+	//Select Entire Word
+	//If it follows a word path, pop the letters, permanently highlight letters and cross it off the list
+	//else fizzle letters and unhighlight path/letters
+
+	//Selection Types:
+	//Highlight
+	//Line
+	//Both
 
 	
 	// Update is called once per frame
