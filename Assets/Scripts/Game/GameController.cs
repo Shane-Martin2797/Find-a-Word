@@ -22,6 +22,10 @@ public class GameController : SingletonBehaviour<GameController>
 
 	public void SpawnGrid(int x, int y)
 	{
+		if (grid == null)
+		{
+			return;
+		}
 		if (x < 0 || y < 0)
 		{
 			return;
