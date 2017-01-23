@@ -31,10 +31,63 @@ public class InputController : SingletonBehaviour<InputController>
 	//Line
 	//Both
 
-	
+
+	void Start()
+	{
+		Input.multiTouchEnabled = false;
+	}
+
+
+	Vector2 mouseStart;
+	Vector2 mouseDelta;
+	Vector2 mouseEnd;
+
 	// Update is called once per frame
 	void Update()
 	{
+/*
+		if (Input.touchCount > 0)
+		{
+			Touch touch = Input.GetTouch(0);
+
+			switch (touch.phase)
+			{
+				case TouchPhase.Began:
+					{
+						Debug.Log(touch.position);
+						break;
+					}
+				case TouchPhase.Moved:
+					{
+						Debug.Log(touch.position);
+						break;
+					}
+				case TouchPhase.Ended:
+					{
+						Debug.Log(touch.position);
+						break;
+					}
+			}
+		}
+*/
+
+		{
+			if (Input.GetKeyDown(KeyCode.Mouse0))
+			{
+				mouseStart = Input.mousePosition;
+			}
+			else if (Input.GetKeyUp(KeyCode.Mouse0))
+			{
+				mouseEnd = Input.mousePosition;
+			}
+			else if (Input.GetKey(KeyCode.Mouse0))
+			{
+				mouseDelta = Input.mousePosition;
+			}
+
+		}
+
+
 		if (Input.GetKeyUp(KeyCode.Mouse0))
 		{
 			Vector2 mousePos = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
