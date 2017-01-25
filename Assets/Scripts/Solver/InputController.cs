@@ -3,6 +3,9 @@ using System.Collections;
 
 public class InputController : SingletonBehaviour<InputController>
 {
+
+	public UILineRenderer lineRenderer;
+
 	//Grid Size: 750 * 750
 	//Grid Pos: 0, 150 (Anchor: Middle)
 
@@ -31,16 +34,23 @@ public class InputController : SingletonBehaviour<InputController>
 	//Line
 	//Both
 
+	Vector2 res;
+	Vector2 screenSize;
 
 	void Start()
 	{
 		Input.multiTouchEnabled = false;
+		lineRenderer.CreatePath(1, 0);
+		res = ButtonController.Instance.canvasScaler.referenceResolution;
+		screenSize = new Vector2(Screen.width, Screen.height);
 	}
 
 
 	Vector2 mouseStart;
 	Vector2 mouseDelta;
 	Vector2 mouseEnd;
+
+	int cur = 0;
 
 	// Update is called once per frame
 	void Update()
@@ -72,19 +82,28 @@ public class InputController : SingletonBehaviour<InputController>
 */
 
 		{
+			Vector2 pos = Vector2.Scale((new Vector2(Input.mousePosition.x / screenSize.x, Input.mousePosition.y / screenSize.y)), (res));
+
 			if (Input.GetKeyDown(KeyCode.Mouse0))
 			{
-				mouseStart = Input.mousePosition;
+				mouseStart = pos;
+				lineRenderer.SetPath(cur, mouseStart, 1);
+				cur++;
+				//lineRenderer.CreatePath(1, 0);
 			}
+			/*
 			else if (Input.GetKeyUp(KeyCode.Mouse0))
 			{
-				mouseEnd = Input.mousePosition;
+				mouseEnd = pos;
+				lineRenderer.SetPath(cur, mouseEnd, 1);
+				cur++;
 			}
-			else if (Input.GetKey(KeyCode.Mouse0))
+			*/
+			//else if (Input.GetKey(KeyCode.Mouse0))
 			{
-				mouseDelta = Input.mousePosition;
+				mouseDelta = pos;
+				lineRenderer.SetPath(cur, mouseDelta, 1);
 			}
-
 		}
 
 

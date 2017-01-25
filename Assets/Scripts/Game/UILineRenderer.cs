@@ -117,9 +117,10 @@ public class UILineRenderer : MonoBehaviour
 
 				trans.eulerAngles = rot;
 
+				float divisor = ((float)j / ((float)paths [i].Length - 2));
 
-				trans.sizeDelta = new Vector2(Mathf.Abs(diff.magnitude), Mathf.Lerp(startThickness, endThickness, (j / (paths [i].Length - 1))));
-				imageObject.color = Color.Lerp(startColour, endColour, (j / (paths [i].Length - 1)));
+				trans.sizeDelta = new Vector2(Mathf.Abs(diff.magnitude), Mathf.Lerp(startThickness, endThickness, divisor));
+				imageObject.color = Color.Lerp(startColour, endColour, divisor);
 			}
 		}
 
@@ -128,7 +129,13 @@ public class UILineRenderer : MonoBehaviour
 
 	void AddObjects(int path)
 	{
-		if (paths [path].Length >= fillObjects [path].Length)
+		//TODO: FIX
+		if (path >= paths.Count || path >= fillObjects.Count)
+		{
+			return;
+		}
+
+		if (paths [path].Length <= fillObjects [path].Length)
 		{
 			return;
 		}
@@ -157,7 +164,12 @@ public class UILineRenderer : MonoBehaviour
 
 	void RemoveObjects(int path)
 	{
-		if (paths [path].Length <= fillObjects [path].Length)
+		if (path >= paths.Count || path >= fillObjects.Count)
+		{
+			return;
+		}
+
+		if (paths [path].Length >= fillObjects [path].Length)
 		{
 			return;
 		}
@@ -169,11 +181,13 @@ public class UILineRenderer : MonoBehaviour
 			sIndex = paths [path].Length;
 		}
 
+		Debug.Log(sIndex);
+
 		for (int i = sIndex; i < fillObjects [path].Length; i++)
 		{
 			if (fillObjects [path] [i] != null)
 			{
-				Destroy(fillObjects [path] [i]);
+				Destroy(fillObjects [path] [i].gameObject);
 			}
 		}
 
@@ -302,7 +316,6 @@ public class UILineRenderer : MonoBehaviour
 		update = true;
 	}
 
-
 	public void CreatePath(int size)
 	{
 		paths.Add(new Vector2[size]);
@@ -316,12 +329,18 @@ public class UILineRenderer : MonoBehaviour
 			paths.Add(new Vector2[0]);
 		}
 
+
 		for (int i = fillObjects.Count; i <= pathCount; i++)
 		{
 			fillObjects.Add(new Image[0]);
 		}
 
 		paths [pathCount] = new Vector2[size];
+
+		//Create Path needs to check if there is already a path there and remove any objects already created.
+		//RemoveObjects(pathCount);
+		RemoveObjects(pathCount);
+
 		fillObjects [pathCount] = new Image[size];
 	}
 }
