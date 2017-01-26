@@ -106,6 +106,11 @@ public class InputController : SingletonBehaviour<InputController>
 			}
 		}
 
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			ButtonController.Instance.BackMenu();
+		}
+
 
 		if (Input.GetKeyUp(KeyCode.Mouse0))
 		{

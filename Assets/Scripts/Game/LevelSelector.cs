@@ -39,20 +39,22 @@ public class LevelSelector : MonoBehaviour
 			newLevelButton.transform.localScale = Vector3.one;
 		}
 
+		oldBackButton = CreateBackButton();
+	}
+
+	public Button CreateBackButton()
+	{
 		Button newBackButton = Instantiate(backButton) as Button;
 		newBackButton.transform.SetParent(buttonHolder.transform);
 		newBackButton.transform.localScale = Vector3.one;
-		oldBackButton = newBackButton;
-	}
 
-
-
-	void Start()
-	{
-		for (int i = 0; i < levels.Count; i++)
+		newBackButton.onClick.AddListener(() =>
 		{
-			CreateLevelButton(i);
-		}
+			ButtonController.Instance.BackMenu();
+		});
+
+		newBackButton.gameObject.name = "Back Button";
+		return newBackButton;
 	}
 
 	public void CreateLevelButton(int level)
@@ -65,6 +67,7 @@ public class LevelSelector : MonoBehaviour
 		{
 			MenuManager.Instance.CloseMenu(gameObject);
 		});
+		levels [level].gameObject.name = "Level " + (level + 1) + " Button";
 
 		levels [level].GetComponentInChildren<Text>(true).text = "Level " + (level + 1);
 	}
