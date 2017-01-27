@@ -103,8 +103,6 @@ public class Levels : SingletonBehaviour<Levels>
 	public Level[] australianLevels;
 	public Level[] britishLevels;
 
-	private List<string> strings = new List<string> { "but", "edd", "new" };
-
 	public LevelSelector selector;
 
 	public Level[] GetLevel(Language lan)

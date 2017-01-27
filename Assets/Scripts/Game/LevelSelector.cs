@@ -16,6 +16,12 @@ public class LevelSelector : MonoBehaviour
 
 	private Button oldBackButton;
 
+	void Start()
+	{
+		//Could make it delegate buttons (pre-created) instead of creating them as well as delegating.
+		PopulateButtons(Levels.Instance.GetLevel((Language)GameController.Instance.playerSave.language).Length);
+	}
+
 	public void PopulateButtons(int numberOfButtons)
 	{
 		Button[] buttons = buttonHolder.GetComponentsInChildren<Button>(true);
@@ -39,10 +45,11 @@ public class LevelSelector : MonoBehaviour
 			newLevelButton.transform.localScale = Vector3.one;
 		}
 
-		oldBackButton = CreateBackButton();
+
+		CreateBackButton();
 	}
 
-	public Button CreateBackButton()
+	public void CreateBackButton()
 	{
 		Button newBackButton = Instantiate(backButton) as Button;
 		newBackButton.transform.SetParent(buttonHolder.transform);
@@ -54,7 +61,8 @@ public class LevelSelector : MonoBehaviour
 		});
 
 		newBackButton.gameObject.name = "Back Button";
-		return newBackButton;
+
+		oldBackButton = newBackButton;
 	}
 
 	public void CreateLevelButton(int level)
