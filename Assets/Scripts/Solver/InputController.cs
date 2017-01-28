@@ -36,6 +36,7 @@ public class InputController : SingletonBehaviour<InputController>
 
 	Vector2 res;
 	Vector2 screenSize;
+	RectTransform playSpace;
 
 	void Start()
 	{
@@ -43,6 +44,7 @@ public class InputController : SingletonBehaviour<InputController>
 		lineRenderer.CreatePath(1, 0);
 		res = ButtonController.Instance.canvasScaler.referenceResolution;
 		screenSize = new Vector2(Screen.width, Screen.height);
+		playSpace = GameController.Instance.grid.GetComponent<RectTransform>();
 	}
 
 
@@ -52,6 +54,43 @@ public class InputController : SingletonBehaviour<InputController>
 
 	int cur = 0;
 
+	void GetGrid(Vector2 pos)
+	{
+		if (playSpace == null)
+		{
+			playSpace = GameController.Instance.grid.GetComponent<RectTransform>();
+		}
+
+		if (playSpace == null)
+		{
+			return;
+		}
+
+		Vector2 size = new Vector2(playSpace.rect.width, playSpace.rect.height);
+		Vector2 trueAnchoredPos = (res / 2) + playSpace.anchoredPosition;
+		Vector2 playAreaMin = trueAnchoredPos - (size / 2);
+		Vector2 playAreaMax = trueAnchoredPos + (size / 2);
+
+		Debug.Log(trueAnchoredPos);
+		Debug.Log(playAreaMin);
+		Debug.Log(playAreaMax);
+
+		if (pos.x > playAreaMin.x
+		    && pos.y > playAreaMin.y
+		    && pos.x < playAreaMax.x
+		    && pos.y < playAreaMin.y)
+		{
+			Vector2 cellSize = GameController.Instance.grid.cellSize + GameController.Instance.grid.spacing;
+
+			Vector2 flippedPos = new Vector2(pos.x, res.y - pos.y);
+
+
+			Vector2 localPos = new Vector2(flippedPos.x - playAreaMin.x, flippedPos.y - playAreaMax.y);
+		}
+
+
+
+	}
 	// Update is called once per frame
 	void Update()
 	{
@@ -84,9 +123,12 @@ public class InputController : SingletonBehaviour<InputController>
 		{
 			Vector2 pos = Vector2.Scale((new Vector2(Input.mousePosition.x / screenSize.x, Input.mousePosition.y / screenSize.y)), (res));
 
+
+
 			if (Input.GetKeyDown(KeyCode.Mouse0))
 			{
 				mouseStart = pos;
+				GetGrid(pos);
 				lineRenderer.SetPath(cur, mouseStart, 1);
 				cur++;
 				//lineRenderer.CreatePath(1, 0);
@@ -104,6 +146,7 @@ public class InputController : SingletonBehaviour<InputController>
 				mouseDelta = pos;
 				lineRenderer.SetPath(cur, mouseDelta, 1);
 			}
+
 		}
 
 		if (Input.GetKeyDown(KeyCode.Escape))
