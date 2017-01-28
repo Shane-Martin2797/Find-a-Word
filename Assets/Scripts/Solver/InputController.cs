@@ -54,7 +54,7 @@ public class InputController : SingletonBehaviour<InputController>
 
 	int cur = 0;
 
-	void GetGrid(Vector2 pos)
+	Vector2 GetGrid(Vector2 pos)
 	{
 		if (playSpace == null)
 		{
@@ -71,25 +71,23 @@ public class InputController : SingletonBehaviour<InputController>
 		Vector2 playAreaMin = trueAnchoredPos - (size / 2);
 		Vector2 playAreaMax = trueAnchoredPos + (size / 2);
 
-		Debug.Log(trueAnchoredPos);
-		Debug.Log(playAreaMin);
-		Debug.Log(playAreaMax);
-
 		if (pos.x > playAreaMin.x
 		    && pos.y > playAreaMin.y
 		    && pos.x < playAreaMax.x
-		    && pos.y < playAreaMin.y)
+		    && pos.y < playAreaMax.y)
 		{
 			Vector2 cellSize = GameController.Instance.grid.cellSize + GameController.Instance.grid.spacing;
 
 			Vector2 flippedPos = new Vector2(pos.x, res.y - pos.y);
 
+			Vector2 localPos = new Vector2(flippedPos.x - playAreaMin.x, flippedPos.y - (res.y - playAreaMax.y));
+			Debug.Log("local: " + localPos);
 
-			Vector2 localPos = new Vector2(flippedPos.x - playAreaMin.x, flippedPos.y - playAreaMax.y);
+			Vector2 square = new Vector2(Mathf.FloorToInt(localPos.x / cellSize.x), Mathf.FloorToInt(localPos.y / cellSize.y));
+			Debug.Log("Square: " + square);
+
+			return square;
 		}
-
-
-
 	}
 	// Update is called once per frame
 	void Update()
@@ -128,7 +126,7 @@ public class InputController : SingletonBehaviour<InputController>
 			if (Input.GetKeyDown(KeyCode.Mouse0))
 			{
 				mouseStart = pos;
-				GetGrid(pos);
+				Vector2 gridStart = GetGrid(pos);
 				lineRenderer.SetPath(cur, mouseStart, 1);
 				cur++;
 				//lineRenderer.CreatePath(1, 0);
