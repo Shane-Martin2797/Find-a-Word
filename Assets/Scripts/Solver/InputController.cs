@@ -63,8 +63,10 @@ public class InputController : SingletonBehaviour<InputController>
 
 		if (playSpace == null)
 		{
-			return;
+			return -Vector2.one;
 		}
+
+		//Fix this so they aren't using temp variables
 
 		Vector2 size = new Vector2(playSpace.rect.width, playSpace.rect.height);
 		Vector2 trueAnchoredPos = (res / 2) + playSpace.anchoredPosition;
@@ -87,6 +89,10 @@ public class InputController : SingletonBehaviour<InputController>
 			Debug.Log("Square: " + square);
 
 			return square;
+		}
+		else
+		{
+			return -Vector2.one;
 		}
 	}
 	// Update is called once per frame
@@ -121,27 +127,28 @@ public class InputController : SingletonBehaviour<InputController>
 		{
 			Vector2 pos = Vector2.Scale((new Vector2(Input.mousePosition.x / screenSize.x, Input.mousePosition.y / screenSize.y)), (res));
 
-
-
+			//Touch.Began
 			if (Input.GetKeyDown(KeyCode.Mouse0))
 			{
+				//Keep a record fo where we started.
 				mouseStart = pos;
 				Vector2 gridStart = GetGrid(pos);
 				lineRenderer.SetPath(cur, mouseStart, 1);
 				cur++;
 				//lineRenderer.CreatePath(1, 0);
 			}
-			/*
+			//Touch.Ended
 			else if (Input.GetKeyUp(KeyCode.Mouse0))
 			{
+				//Confirm if we highlighted a word's 'Path'
 				mouseEnd = pos;
-				lineRenderer.SetPath(cur, mouseEnd, 1);
-				cur++;
 			}
-			*/
-			//else if (Input.GetKey(KeyCode.Mouse0))
+			//Touch.Moved
+			else if (Input.GetKey(KeyCode.Mouse0))
 			{
+				//Check the angle that we are at and add the 'Path' of all the letters we are going through
 				mouseDelta = pos;
+				Vector2 gridEnd = GetGrid(pos);
 				lineRenderer.SetPath(cur, mouseDelta, 1);
 			}
 
