@@ -181,7 +181,7 @@ public class UILineRenderer : MonoBehaviour
 			sIndex = paths [path].Length;
 		}
 
-		Debug.Log(sIndex);
+//		Debug.Log(sIndex);
 
 		for (int i = sIndex; i < fillObjects [path].Length; i++)
 		{
@@ -338,7 +338,6 @@ public class UILineRenderer : MonoBehaviour
 		paths [pathCount] = new Vector2[size];
 
 		//Create Path needs to check if there is already a path there and remove any objects already created.
-		//RemoveObjects(pathCount);
 		RemoveObjects(pathCount);
 
 		fillObjects [pathCount] = new Image[size];

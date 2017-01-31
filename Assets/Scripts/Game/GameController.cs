@@ -20,6 +20,11 @@ public class GameController : SingletonBehaviour<GameController>
 
 	public GameObject letter;
 
+	public void CheckWord(Vector2 start, Vector2 end)
+	{
+
+	}
+
 	public void SpawnGrid(int x, int y)
 	{
 		if (grid == null)
@@ -71,6 +76,7 @@ public class GameController : SingletonBehaviour<GameController>
 		}
 
 		//TODO: Cause words to spawn filled out (as uneditable objects)
+		InputController.Instance.SetUpGrid();
 		WordsContentTracker.Instance.SpawnFields(WordsContentTracker.Instance.fieldVariables.defaultInputFields);
 	}
 
