@@ -168,6 +168,7 @@ public class InputController : SingletonBehaviour<InputController>
 				{
 					GameController.Instance.CheckWord(gridStart.Value, gridEnd.Value);
 				}
+				lineRenderer.CreatePath(1, 0);
 			}
 			//Touch.Moved
 			else if (Input.GetKey(KeyCode.Mouse0))
