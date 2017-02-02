@@ -22,7 +22,24 @@ public class GameController : SingletonBehaviour<GameController>
 
 	public void CheckWord(Vector2 start, Vector2 end)
 	{
+		//Create Path from Start to End
+		//Check dir if it works (backwards/diagonal)
 
+/* Backwards/Diagonal Checks (Copy/Paste) from InputController
+
+		//if it allows backwards don't check (its true), otherwise if it doesn't allow backwards and it goes backwards its false.
+						bool backwardsTrue = (GameController.Instance.currentLevel.backwards) || !((dir.x < 0 || dir.y < 0) && !GameController.Instance.currentLevel.backwards);
+						//If it allows Diagonals, its true
+						bool diagonalsTrue = ((GameController.Instance.currentLevel.diagonals) ||
+						//Otherwise if it is diagonal and it doesn't allow diagonals, its false
+						                     (!(((dir.x == 1 && dir.y == 1) || (dir.x == 1 && dir.y == -1) || (dir.x == -1 && dir.y == 1) || (dir.x == -1 && dir.y == -1))
+						                     && !GameController.Instance.currentLevel.diagonals)));
+
+*/
+
+		//Check against word paths
+		//Mark word found if it follows a word path. (Do "Found Word")
+		//else Do "Failed Find Word"
 	}
 
 	public void SpawnGrid(int x, int y)
@@ -246,7 +263,7 @@ public class GameController : SingletonBehaviour<GameController>
 		currentLevel = null;
 	}
 
-	Level currentLevel;
+	public Level currentLevel;
 
 	public void CreateLevel(int levelNumber)
 	{

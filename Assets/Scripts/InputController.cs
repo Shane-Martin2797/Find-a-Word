@@ -197,25 +197,40 @@ public class InputController : SingletonBehaviour<InputController>
 						dir.x = Mathf.RoundToInt(dir.x);
 						dir.y = Mathf.RoundToInt(dir.y);
 
-						int xLength = Mathf.RoundToInt(Mathf.Abs(gridEnd.Value.x - gridStart.Value.x));
-						int yLength = Mathf.RoundToInt(Mathf.Abs(gridEnd.Value.y - gridStart.Value.y));
+						//if it allows backwards don't check (its true), otherwise if it doesn't allow backwards and it goes backwards its false.
+						bool backwardsTrue = (GameController.Instance.currentLevel.backwards) || !((dir.x < 0 || dir.y < 0) && !GameController.Instance.currentLevel.backwards);
+						//If it allows Diagonals, its true
+						bool diagonalsTrue = ((GameController.Instance.currentLevel.diagonals) ||
+						//Otherwise if it is diagonal and it doesn't allow diagonals, its false
+						                     (!(((dir.x == 1 && dir.y == 1) || (dir.x == 1 && dir.y == -1) || (dir.x == -1 && dir.y == 1) || (dir.x == -1 && dir.y == -1))
+						                     && !GameController.Instance.currentLevel.diagonals)));
 
-						int length = Mathf.Max(xLength, yLength);
-
-						lineRenderer.CreatePath(1, length);
-						lineRenderer.SetPath(0, GridToPosition(gridStart.Value).Value, 1);
-						for (int i = 0; i < length; i++)
+						if (backwardsTrue && diagonalsTrue)
 						{
-							Vector2? gr = GridToPosition(gridStart.Value + (dir * (i + 1)));
-							if (gr.HasValue)
+							int xLength = Mathf.RoundToInt(Mathf.Abs(gridEnd.Value.x - gridStart.Value.x));
+							int yLength = Mathf.RoundToInt(Mathf.Abs(gridEnd.Value.y - gridStart.Value.y));
+
+							int length = Mathf.Max(xLength, yLength);
+
+							lineRenderer.CreatePath(1, length);
+							lineRenderer.SetPath(0, GridToPosition(gridStart.Value).Value, 1);
+							for (int i = 0; i < length; i++)
 							{
-								lineRenderer.SetPath(i + 1, gr.Value, 1);
+								Vector2? gr = GridToPosition(gridStart.Value + (dir * (i + 1)));
+								if (gr.HasValue)
+								{
+									lineRenderer.SetPath(i + 1, gr.Value, 1);
+								}
+								else
+								{
+									lineRenderer.CreatePath(1, i + 1);
+									break;
+								}
 							}
-							else
-							{
-								lineRenderer.CreatePath(1, i + 1);
-								break;
-							}
+						}
+						else
+						{
+							outOfBounds = true;
 						}
 					}
 					else
